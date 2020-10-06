@@ -1,0 +1,51 @@
+{
+  "name": "lattice-connector-endpoint",
+  "version": "0.0.0",
+  "description": "A small HTTP server + MQTT broker designed to bridge the web with Lattices in the field",
+  "main": "src/index.js",
+  "scripts": {
+    "build": "babel src -d dist",
+    "lint": "eslint src",
+    "start": "NODE_ENV=development nodemon --exec babel-node src/index.js --watch src --watch node_modules --watch config.json",
+    "test": "mocha --timeout 180000 test/integration.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GridPlus/lattice-connector-endpoint.git"
+  },
+  "keywords": [
+    "Ethereum",
+    "Bitcoin",
+    "crypto",
+    "GridPlus",
+    "Lattice"
+  ],
+  "author": "Alex Miller",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/GridPlus/lattice-connector-endpoint/issues"
+  },
+  "homepage": "https://github.com/GridPlus/lattice-connector-endpoint#readme",
+  "dependencies": {
+    "aedes": "^0.42.6",
+    "body-parser": "^1.18.3",
+    "cconfig": "^2.0.2",
+    "cors": "^2.8.5",
+    "express": "^4.16.4",
+    "llog": "^0.2.0",
+    "mqtt": "^2.18.8"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-plugin-module-resolver": "^4.0.0",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "chai": "^4.2.0",
+    "eslint": "^7.10.0",
+    "eslint-config-airbnb-base": "^14.2.0",
+    "eslint-plugin-import": "^2.22.1",
+    "gridplus-sdk": "^0.6.1",
+    "mocha": "^8.1.3",
+    "nodemon": "^2.0.4",
+    "readline-sync": "^1.4.10"
+  }
+}

@@ -6,12 +6,12 @@ import log from 'llog';
 const config = require('cconfig')();
 
 const connectOptions = {
-  clientId: 'REST_API',
-  username: config.MQTT_USERNAME,
-  password: config.MQTT_PASSWORD,
+  clientId: config.MQTT.CLIENT_ID,
+  username: config.MQTT.USERNAME,
+  password: config.MQTT.PASSWORD,
 };
 
-const brokerURI = `mqtt://${config.host}:${config.mqttBrokerPort}`;
+const brokerURI = `mqtt://${config.APP_HOST}:${config.MQTT.BROKER_PORT}`;
 const client = mqtt.connect(brokerURI, connectOptions);
 
 client.on('connect', () => {

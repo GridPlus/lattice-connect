@@ -35,12 +35,12 @@ log.info(`${packageJson.name} version ${packageJson.version} starting`);
 
 // 1. Create the MQTT broker (server)
 //----------------------------------
-broker.listen(config.mqttBrokerPort, () => {
-  log.info('broker server started on port ', config.mqttBrokerPort);
+broker.listen(config.MQTT.BROKER_PORT, () => {
+  log.info('broker server started on port ', config.MQTT.BROKER_PORT);
 });
 
 // 2. Create the REST server
 //----------------------------------
-app.listen(config.appPort, config.host, () => {
-  log.info(`signing-api-proxy started listening on ${config.appPort}`);
+app.listen(config.APP_PORT, config.APP_HOST, () => {
+  log.info(`signing-api-proxy started listening on ${config.APP_PORT}`);
 });

@@ -5,7 +5,7 @@
 //
 // To change your config on your Lattice (must be a dev lattice), SSH into your GCE and run:
 // service gpd stop && service mosquitto stop
-// uci set gridplus.remote_mqtt_address=<en0>:<mqttBrokerPort>
+// uci set gridplus.remote_mqtt_address=<en0>:<MQTT.BROKER_PORT>
 // uci commit
 // service mosquitto start && service gpd start
 const config = require('cconfig')()
@@ -82,7 +82,7 @@ function setupTest() {
   // Initialize the SDK
   try {
     sdkClient = new SDK({ 
-      baseUrl: `http://127.0.0.1:${config.appPort}`,
+      baseUrl: `http://localhost:${config.APP_PORT}`,
       crypto,
       name: 'lattice-connector-test',
       privKey: TEST_KEY,

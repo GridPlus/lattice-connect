@@ -1,8 +1,8 @@
-import express from 'express';
 import bodyParser from 'body-parser';
 import crypto from 'crypto';
-import log from 'llog';
+import express from 'express';
 import client from './client';
+import logger from './logger';
 
 const cors = require('cors');
 const config = require('cconfig')();
@@ -39,13 +39,13 @@ function getCacheID(latticeId, requestId) {
 function subscribeToResponse(responseTopic) {
   client.subscribe(responseTopic, client.subOptions, (err, granted) => {
     if (err) {
-      log.error(`Unable to subscribe to internal topic ${responseTopic}: ${err.toString()}`);
+      logger.error(`Unable to subscribe to internal topic ${responseTopic}: ${err.toString()}`);
       throw new Error(err);
     }
     if (granted) {
-      log.debug(`Subscribed to topic ${responseTopic}`);
+      logger.debug(`Subscribed to topic ${responseTopic}`);
     } else {
-      log.debug(`Failed to subscribe to internal topic ${responseTopic}`);
+      logger.debug(`Failed to subscribe to internal topic ${responseTopic}`);
     }
   });
 }
@@ -55,10 +55,10 @@ function subscribeToResponse(responseTopic) {
 function unsubscribeFromResponse(responseTopic) {
   client.unsubscribe(responseTopic, (err) => {
     if (err) {
-      log.error(`Unable to unsubscribe from topic ${responseTopic}: ${err.toString()}`);
+      logger.error(`Unable to unsubscribe from topic ${responseTopic}: ${err.toString()}`);
       throw new Error(err);
     } else {
-      log.debug(`Unsubscribed from interal topic ${responseTopic}`);
+      logger.debug(`Unsubscribed from interal topic ${responseTopic}`);
     }
   });
 }
@@ -90,11 +90,14 @@ function listenForResponse(res, serial, requestId) {
       try {
         toReturn = responseCache[cacheID].toString('hex');
         res.send({ status: 200, message: toReturn });
-        log.info(`successfully responded to request for agent: ${serial} request: ${requestId}`);
+        logger.debug(`Successfully responded to request for agent: ${serial} request: ${requestId}`);
       } catch (err) {
-        log.error(`could not parse response from agent: ${serial} requestId: ${requestId}, error: ${err}`);
+        logger.error(`Could not parse response from agent: ${serial} requestId: ${requestId}, error: ${err}`);
         res.send({ status: 500, message: 'Could not parse response from agent' });
       }
+      // Clear this item from the cache and unsubscribe from the topic.
+      responseCache[cacheID] = undefined;
+      unsubscribeFromResponse(responseTopic);
       clearInterval(interval);
     } else {
       // If there is still no response, record the time and return timeout if we have reached
@@ -102,14 +105,13 @@ function listenForResponse(res, serial, requestId) {
       elapsed += iteration;
       if (elapsed >= totalTime) {
         res.send({ status: 500, message: `lattice-connector-endpoint timed out after waiting ${Math.ceil(totalTime / 1000)}s` });
+        // Clear this item from the cache and unsubscribe from the topic.
+        responseCache[cacheID] = undefined;
+        unsubscribeFromResponse(responseTopic);
         clearInterval(interval);
       }
     }
   }, iteration);
-
-  // Clear this item from the cache and unsubscribe from the topic.
-  responseCache[cacheID] = undefined;
-  unsubscribeFromResponse(responseTopic);
 }
 
 //---------------------
@@ -123,9 +125,9 @@ client.on('message', (topic, payload) => {
     const latticeId = topic.split('/')[1];
     const requestId = topic.split('/')[3];
     responseCache[getCacheID(latticeId, requestId)] = payload;
-    log.trace(`Added to internal responseCache (topic=${topic}, latticeId=${latticeId}, requestId=${requestId}): ${payload}`);
+    logger.debug(`Added to internal responseCache (topic=${topic}, latticeId=${latticeId}, requestId=${requestId}): ${payload}`);
   } catch (err) {
-    log.debug(`Failed to add response to internal cache (topic=${topic}): ${err.toString()}`);
+    logger.error(`Failed to add response to internal cache (topic=${topic}): ${err.toString()}`);
   }
 });
 
@@ -145,10 +147,10 @@ app.post('/:latticeId', (req, res) => {
     const requestTopic = `to_agent/${latticeId}/request/${requestId}`;
     client.publish(requestTopic, payload, client.pubOpts, (err) => {
       if (err) {
-        log.error(`Unable to publish message for ${latticeId}, mqtt possibly disconnecting`);
+        logger.error(`Unable to publish message for ${latticeId}, mqtt possibly disconnecting`);
         res.send({ status: 500, message: 'Failed to send message to Lattice' });
       } else {
-        log.info(`published message connect to ${requestTopic}`);
+        logger.debug(`published message connect to ${requestTopic}`);
         listenForResponse(res, latticeId, requestId);
       }
     });

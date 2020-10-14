@@ -7,7 +7,9 @@
     "build": "babel src -d dist",
     "lint": "eslint src",
     "start": "NODE_ENV=development nodemon --exec babel-node src/index.js --watch src --watch node_modules --watch config.json",
-    "test": "mocha --timeout 180000 test/integration.js"
+    "test": "mocha --timeout 180000 test/integration.js",
+    "docker-build": "docker build -t lattice-connector-endpoint:1.0 .",
+    "docker-run": "docker run -d --name lattice-connector-endpoint -p 80:80 -p 1883:1883 lattice-connector-endpoint:1.0"
   },
   "repository": {
     "type": "git",
@@ -28,6 +30,7 @@
   "homepage": "https://github.com/GridPlus/lattice-connector-endpoint#readme",
   "dependencies": {
     "aedes": "^0.42.6",
+    "babel-preset-env": "^1.7.0",
     "body-parser": "^1.18.3",
     "cconfig": "^2.0.2",
     "cors": "^2.8.5",

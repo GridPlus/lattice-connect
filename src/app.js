@@ -78,8 +78,8 @@ function listenForResponse(res, serial, requestId) {
   // Set a timer to wait for a response to the message sent to the agent
   // Activates a subscription during this time that will forward the return message back as
   // a response to the original request
-  const totalTime = config.REQUEST_TIMEOUT;
-  const iteration = 500;
+  const totalTime = config.TIMEOUT_TOTAL_MS;
+  const iteration = config.TIMEOUT_ITER_MS;
   let elapsed = 0;
 
   const interval = setInterval(() => {
@@ -101,7 +101,7 @@ function listenForResponse(res, serial, requestId) {
       // the timeout threshold.
       elapsed += iteration;
       if (elapsed >= totalTime) {
-        res.send({ status: 500, message: `Timed out after waiting ${Math.ceil(totalTime / 1000)} sec` });
+        res.send({ status: 500, message: `lattice-connector-endpoint timed out after waiting ${Math.ceil(totalTime / 1000)}s` });
         clearInterval(interval);
       }
     }

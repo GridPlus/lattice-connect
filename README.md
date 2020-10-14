@@ -16,6 +16,19 @@ The pathway to communicate with a Lattice involves the following:
 
 > &dagger; *NOTE: V1 Lattices point to a hardcoded GridPlus cloud broker, but future versions will allow users to stand up their own connecting endpoint (i.e. this repo) to create a custom MQTT broker. We may also make the device ID itself be configurable*
 
+### API
+
+**[POST] /<deviceID>**
+
+```
+{
+  data: <UInt8Array or Buffer>
+}
+```
+
+Contact a Lattice (given its deviceID) with a payload. The payload must be a UInt8Array or Buffer.
+
+
 ### Example Communication Pathway
 
 The prototypical example would be a DeFi app that uses Metamask. In this case Metamask would use the [`eth-lattice-keyring`](https://github.com/GridPlus/eth-lattice-keyring) to send requests to the Lattice via the `gridplus-sdk`.
@@ -24,10 +37,13 @@ The pathway would look like this:
 
 > DeFi web app -> Metamask -> `eth-lattice-keyring` -> `gridplus-sdk` -> `lattice-connector-endpoint` -> target Lattice
 
-## Installation
+## Installation and Usage
 
-> TODO
+You can create your own connection endpoint using Docker. Convenience scripts are included in `package.json`:
 
-## Dockerizing
+```
+npm run docker-build
+npm run docker-run
+```
 
-> TODO
+You can then test connectivity with `curl -X POST http://localhost/test`, which should immediately return a `500` error.

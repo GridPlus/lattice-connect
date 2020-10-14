@@ -11,7 +11,7 @@ const connectOptions = {
   password: config.MQTT_PASSWORD,
 };
 
-const brokerURI = `mqtt://127.0.0.1:${config.mqttBrokerPort}`;
+const brokerURI = `mqtt://${config.host}:${config.mqttBrokerPort}`;
 const client = mqtt.connect(brokerURI, connectOptions);
 
 client.on('connect', () => {

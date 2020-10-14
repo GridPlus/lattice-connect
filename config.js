@@ -1,4 +1,5 @@
 module.exports = {
   mqttBrokerPort: 1883,
-  appPort: 3000,
+  appPort: 80,
+  host: '0.0.0.0',
 }

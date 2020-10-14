@@ -41,6 +41,6 @@ broker.listen(config.mqttBrokerPort, () => {
 
 // 2. Create the REST server
 //----------------------------------
-app.listen(config.appPort, () => {
-  log.info('signing-api-proxy started listening');
+app.listen(config.appPort, config.host, () => {
+  log.info(`signing-api-proxy started listening on ${config.appPort}`);
 });

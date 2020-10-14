@@ -10,37 +10,54 @@
 //                                `./client.js`. This broker is the crux of this servce, as it
 //                                allows Lattices to accept external requests from the internet
 //                                using the MQTT pub/sub architecture.
-import log from 'llog';
 import util from 'util';
 import app from './app';
 import broker from './broker';
+import logger from './logger';
 
 const config = require('cconfig')();
 const packageJson = require('../package.json');
 
+logger.info(`${packageJson.name} version ${packageJson.version} starting`);
+
 // Error handlers
 //-----------------------------------
 process.on('uncaughtException', (err) => {
-  log.fatal(err);
-  log.fatal(err.stack);
+  broker.close(() => { logger.info('Closed broker') });
+  logger.error('uncaughtException: ', err);
+  logger.error(err.stack);
   throw err;
 });
 
 process.on('unhandledRejection', (reason, promise) => {
-  log.fatal(`Unhandled Rejection at: ${util.inspect(promise)} reason: ${reason}`);
-  log.fatal(reason);
+  logger.error(`Unhandled Rejection at: ${util.inspect(promise)} reason: ${reason}`);
+  logger.error(reason);
   throw new Error(`Unhandled Rejection at: ${util.inspect(promise)} reason: ${reason}`);
 });
-log.info(`${packageJson.name} version ${packageJson.version} starting`);
 
 // 1. Create the MQTT broker (server)
 //----------------------------------
-broker.listen(config.MQTT.BROKER_PORT, () => {
-  log.info('broker server started on port ', config.MQTT.BROKER_PORT);
-});
+function startBroker() {
+  logger.info('Starting broker', broker)
+  broker.listen(config.MQTT.BROKER_PORT, () => {
+    logger.info('MQTT broker server started on port ', config.MQTT.BROKER_PORT);
+  });
+}
+logger.info('broker?', broker);
+if (broker.closed === false) {
+  broker.close(() => {
+    logger.info('closed?');
+    startBroker();
+  });
+} else {
+  logger.info('Starting now');
+  startBroker();
+}
+
 
 // 2. Create the REST server
 //----------------------------------
+logger.info('app', app)
 app.listen(config.APP_PORT, config.APP_HOST, () => {
-  log.info(`signing-api-proxy started listening on ${config.APP_PORT}`);
+  logger.info(`signing-api-proxy started listening on ${config.APP_PORT}`);
 });

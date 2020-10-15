@@ -1,6 +1,6 @@
 {
   "name": "lattice-connector-endpoint",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "A small HTTP server + MQTT broker designed to bridge the web with Lattices in the field",
   "main": "src/index.js",
   "scripts": {

@@ -46,9 +46,7 @@ You can run this `node.js` module in a variety of ways. First, clone this repo a
 npm i && npm run build
 ```
 
-### Running Locally
-
-You can run this module locally with one simple command:
+You can now start the process with
 
 ```
 npm start
@@ -56,17 +54,24 @@ npm start
 
 This will create a [pm2](https://pm2.io/) process which will watch for crashes. See those docs for more info on pm2 itself.
 
-You can stop the process at any point with:
+**Stop the process:**
 
 ```
 npm run stop
 ```
 
-And you can remove the running (or stopped) instance with:
+**Get logs from pm2:**
+
+```
+npm run logs
+```
+
+**Kill and remove the process from pm2:**
 
 ```
 npm run rm
 ```
+
 
 ### Running with Docker
 
@@ -77,9 +82,17 @@ npm run docker-build
 npm run docker-run
 ```
 
-### Deploying on Heroku
+### Deploying on AWS
 
-You can run this easily on heroku. Simply fork the repo and deploy from the `master` branch. The app should run with pm2 as if you had started it locally.
+The easiest way to deploy this module in the cloud is on AWS. Because it requires two ports to be open (one for HTTP, the other for MQTT), you cannot use Heroku, as it only binds a single port and exposes it as port 80.
+
+You will need to do the following to prepare your AWS instance:
+
+1. Install node.js and npm (on ubuntu you can do this with `sudo apt-get update && sudo apt-get install node.js npm`)
+2. Ensure you have TLS ports 3000 and 1883 open. You can do this by going to the `Security` tab on the AWS console. Note that you can of course configure these ports in `config.js`, but 3000 and 1883 are the defaults.
+3. When you SSH into your EC2 instance, make sure you switch to the root (sudo) user (on ubuntu you can do this with `sudo su root`)
+
+With these configurations in place, you can now clone this repo and run `npm i && npm run build && npm run start`. You can also run any of the (non-Docker) `npm` commands mentioned above.
 
 ## Connecting your Lattice
 

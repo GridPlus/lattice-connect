@@ -58,7 +58,7 @@ if (broker.closed === false) {
 // 2. Create the REST server
 //----------------------------------
 logger.info('app', app)
-const port = process.env.PORT || config.APP_PORT;
-app.listen(port, config.APP_HOST, () => {
+// const port = process.env.PORT || config.APP_PORT;
+app.listen(3000, config.APP_HOST, () => {
   logger.info(`signing-api-proxy started listening on ${config.APP_PORT}`);
 });

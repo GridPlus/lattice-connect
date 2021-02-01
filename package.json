@@ -8,7 +8,7 @@
     "lint": "eslint src",
     "start": "npx pm2 start dist/index.js --name lattice-connect --watch",
     "stop": "npx pm2 stop lattice-connect",
-    "rm": "npx pm2 delete lattice-connect",
+    "rm": "npx pm2 delete lattice-connect && pkill node",
     "logs": "npx pm2 logs lattice-connect",
     "test": "mocha --timeout 180000 test/integration.js",
     "docker-build": "docker build -t lattice-connect:1.0 .",

@@ -1,7 +1,7 @@
 module.exports = {
   APP_HOST: '0.0.0.0',
   APP_PORT: 3000,
-  LOG_DEST: 'lattice-connector.log',
+  LOG_DEST: '/tmp/lattice-connector.log',
   LOG_LEVEL: 'error', // trace, debug, info, warn, error
   MQTT: {
     CLIENT_ID: 'lattice-connector-endpoint',

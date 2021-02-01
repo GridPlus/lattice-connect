@@ -18,7 +18,7 @@ aedes.on('subscribe', (_subscriptions, _client) => {
 });
 
 aedes.on('publish', (_packet, _client) => {
-  logger.trace(`BROKER: Client (${_client}) published message: ${_packet}`)
+  logger.trace(`BROKER: Client (${_client}) published message: ${JSON.stringify(_packet)}`)
 });
 
 const broker = net.createServer(aedes.handle);

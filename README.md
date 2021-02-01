@@ -1,17 +1,15 @@
 # lattice-connect
 A small HTTP server + MQTT broker designed to communicate with [Lattice](https://gridplus.io/lattice) hardware wallets over the web.
 
-## Background
+## 📖 Background
 
-The [Lattice](https://gridplus.io/lattice) is a next generation, always-online hardware wallet designed to sit behind a user's home WiFi network router. Since we cannot expect the average user to configure their home router, we expect default firewall settings that block incoming requests. For this reason, the Lattice is **not** designed to be contacted directly over HTTP. Instead, it uses a pub/sub model to subscribe to specific topics from an [MQTT](https://mqtt.org/) broker, which typically lives in the cloud (i.e. not behind a firewall). The Lattice subscribes topics containing its device ID. HTTP requests from third party applications must be transformed to MQTT messages and sent to the broker, where they are broadcast and picked up by the target Lattice (i.e. based on device ID).
+The [Lattice](https://gridplus.io/lattice) is a next generation, always-online hardware wallet designed to sit behind a user's home WiFi network router. Since we cannot expect the average user to configure their home router, we expect default firewall settings that block incoming requests. For this reason, the Lattice is **not** designed to be contacted directly over HTTP. Instead, it uses a pub/sub model to subscribe to specific topics from an [MQTT](https://mqtt.org/) broker, which typically lives in the cloud. The Lattice connects to the MQTT broker and subscribes topics containing its own device ID. In order to reach Lattices, HTTP requests from third party applications must be transformed into MQTT messages and sent to the broker. The broker re-publishes the requests, which get picked up by the target Lattices (i.e. based on device ID) because those Lattices are subscribed to such messages from the broker.
 
-By default, communication with all Lattices is routed through GridPlus' centralized cloud infrastructure. Although there is great care that goes into encrypting and securing these communication channels, we at GridPlus want your Lattice to be 100% yours, so we want to offer an alternative to centralized message routing. This module exists to bridge connections between target Lattices and web applications (generally, but not limited to, applications that use the [`gridplus-sdk`](https://github.com/GridPlus/gridplus-sdk)). If you are an advanced user, you can deploy this module yourself and change your Lattice's config to hook into your deployed instance.
+By default, communication with all Lattices is routed through GridPlus' centralized cloud infrastructure. Although there is great care that goes into encrypting and securing these communication channels, we at GridPlus want your Lattice to be 100% yours, so we want to offer `lattice-connect` as an alternative to centralized message routing. This module exists to bridge connections between target Lattices and web applications (generally, but not limited to, applications that use the [`gridplus-sdk`](https://github.com/GridPlus/gridplus-sdk)). **If you are an advanced user, you can deploy this module yourself and change your Lattice's config to hook into your deployed instance.**
 
-Each Lattice subscribes to topics on an MQTT broker using its device ID. Web applications make HTTP requests to a web server, which converts the message to an MQTT topic and sends that to the broker. Once forwarded, the message is picked up by the target Lattice and the request is filled. 
+This module contains both HTTP server and MQTT broker, so it can be used as a singular communication endpoint. *It is important that the process created by this module does not go down, as any lapse in availability can result in severed connections with Lattices subscribed to the MQTT broker.*
 
-This module contains both HTTP server and MQTT broker, so it can be used as a singular communication endpoint.
-
-## Installation and Usage
+## 🏃 Installation and Usage
 
 You can run this `node.js` module in a variety of ways. First, clone this repo and run 
 
@@ -25,7 +23,7 @@ You can now start the process with
 npm start
 ```
 
-This will create a [pm2](https://pm2.io/) process which will watch for crashes. See those docs for more info on pm2 itself.
+This will create a [pm2](https://pm2.io/) process which will watch for crashes. See the [pm2 docs](https://pm2.io/docs/plus/overview/) for more info on pm2 itself.
 
 **Stop the process:**
 
@@ -41,7 +39,7 @@ npm run rm
 
 **Logging**
 
-If you want to mointor crash reports (i.e. logs from `pm2`, the process manager that starts up when you run `npm run start`), you should run: 
+If you want to mointor crash reports (i.e. logs from `pm2`), you should run: 
 
 ```
 npm run logs
@@ -75,7 +73,7 @@ You will need to do the following to prepare your AWS instance:
 
 With these configurations in place, you can now clone this repo and run `npm i && npm run build && npm run start`. You can also run any of the (non-Docker) `npm` commands mentioned above.
 
-## Connecting your Lattice
+## 🔌 Connecting your Lattice
 
 If you want to point your Lattice to a deployed instance of this module, you will need to SSH into the device and change its configurations manually. To get SSH credentials, use your Lattice's UI to visit `Settings -> Advanced -> Device Info` and look for the `SSH Host` and `SSH Password` parameters. SSH in with the following pattern:
 
@@ -97,7 +95,7 @@ You should see a line like the following:
 gridplus.remote_mqtt_address=rabbitmq.gridpl.us:8883
 ```
 
-> You may want to write down the original value of this so you can change it back if you want to go back to using GridPlus' default infrastructure.
+> NOTE: You may want to write down the original value of this so you can change it back if you want to go back to using GridPlus' default infrastructure.
 
 
 You can now change this value with the following set of commands:
@@ -113,17 +111,17 @@ service gpd start
 
 Where `host` is the location of your deployed instance of `lattice-connect` and `BROKER_PORT` refers to `MQTT.BROKER_PORT` in `config.js`, i.e. it is the *MQTT broker* port (1883 by default).
 
-### Using an insecure connection (i.e. no TLS)
+### Using an insecure connection (i.e. no SSL)
 
-By default the Lattice is configured to make a secure mqtts (i.e. using SSL) connection to RabbitMQ. If you wish to use an insecure connection, you will need to open mosquitto configuration (`/etc/mosquitto/mosquitto.conf`) and comment out the following line:
+By default the Lattice is configured to make a secure mqtts (i.e. using SSL) connection to RabbitMQ. If you wish to use an insecure connection (i.e. use the default AWS instance host rather than your own domain), you will need to open mosquitto configuration (`/etc/mosquitto/mosquitto.conf`) and comment out the following line:
 
 ```
 # bridge_capath /etc/ssl/certs/
 ```
 
-> Note: Most messages to the Lattice are encrypted, but we still recommend using an SSL connection
+> NOTE: Most messages to the Lattice are encrypted, but we still recommend using an SSL connection
 
-You will also need to update `/etc/init.d/mosquitto`. This file contains the init script for the mosquitto process. You need to add a block comment around the `echo` command, which writes a new `mosquitto.conf` file every time the service restarts. Since you just edited your mosquitto conf file above, you need to make sure those changes don't get overwritten. Add `Block_comment` to `/etc/init.d/mosquitto` like this:
+You will also need to update `/etc/init.d/mosquitto`. This file contains the init script for starting the mosquitto process. You need to add a block comment around the `echo` command, which writes a new `mosquitto.conf` file every time the service restarts. Since you just edited your mosquitto conf file above, you need to make sure those changes don't get overwritten. Add `Block_comment` to `/etc/init.d/mosquitto` like this:
 
 ```
 # change mosquitto configuration to enable mqtt over websockets
@@ -163,9 +161,11 @@ service mosquitto restart
 service gpd restart
 ```
 
-## Troubleshooting
+Assuming your process is running in the cloud (or wherever you deployed it), your Lattice should establish a connection to the MQTT broker in a few seconds.
 
-If you are not getting messages from your external requester to your Lattice, something in the communication pathway is broken. Please read the above documentation to make sure you have done everything you need to for your situation. If you are sure you set your pathway up properly, there are a few ways to debug and troublehsoot what's going on.
+## 💻 Troubleshooting
+
+If you are not getting messages from your external requester to your Lattice, something in the communication pathway is probably broken. Please read the above documentation to make sure you have done everything you need to for your situation. If you are sure you set your pathway up properly, there are a few ways to debug and troubleshoot what's going on.
 
 ### Make sure your Lattice is connected to the internet
 
@@ -173,7 +173,7 @@ The most generic troubleshooting you can do is unplug your Lattice and plug it b
 
 ### Make sure your cloud service didn't go offline
 
-If your MQTT broker goes offline, it will probably sever connections with Lattices. You can repair these by simply unplugging your Lattice and plugging it in, assuming your Lattice is connected to the internet.
+If your MQTT broker goes offline, it will probably sever connections with subscribed Lattices. You can repair a connection by simply unplugging your Lattice and plugging it in, assuming your Lattice is connected to the internet. You can also run `service mosquitto restart && service gpd restart` if you are SSHed in.
 
 ### Watch trace logs
 
@@ -193,11 +193,11 @@ If you are trying to get a connection, you will see something like this after ru
 
 (Where I have replaced my device ID with `XXXXXX`.)
 
-#### When all else fails...
+### When all else fails...
 
 If you are in a bad state and can't get out, you can always go to your Lattice UI and navigate to `Settings -> Advanced -> Reeset Router`. This will restore factory settings for the Linux kernel you have been SSHing into. This reset will not delete your wallet, keys, or any secure data.
 
-## Testing
+## 🧪 Testing
 
 This repo includes an integration test script that you can run to ensure your communication endpoint is functioning as expected.
 
@@ -219,7 +219,7 @@ npm run test
 
 This will kick off a few integration tests to validate that we are able to connect to the Lattice and get addresses. If these pass, it means the communication pathway is working as expected.
 
-#### HTTP API
+## ℹ️ Web API
 
 The HTTP webserver hosted from this module only contains one route:
 

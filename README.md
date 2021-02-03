@@ -7,7 +7,7 @@ The [Lattice](https://gridplus.io/lattice) is a next generation, always-online h
 
 By default, communication with all Lattices is routed through GridPlus' centralized cloud infrastructure. Although there is great care that goes into encrypting and securing these communication channels, we at GridPlus want your Lattice to be 100% yours, so we want to offer `lattice-connect` as an alternative to centralized message routing. This module exists to bridge connections between target Lattices and web applications (generally, but not limited to, applications that use the [`gridplus-sdk`](https://github.com/GridPlus/gridplus-sdk)). **If you are an advanced user, you can deploy this module yourself and change your Lattice's config to hook into your deployed instance.**
 
-This module contains both HTTP server and MQTT broker, so it can be used as a singular communication endpoint. *It is important that the process created by this module does not go down, as any lapse in availability can result in severed connections with Lattices subscribed to the MQTT broker.*
+This module contains both HTTP server and MQTT broker, so it can be used as a singular communication endpoint.
 
 ## 🏃 Installation and Usage
 
@@ -170,10 +170,6 @@ If you are not getting messages from your external requester to your Lattice, so
 ### Make sure your Lattice is connected to the internet
 
 The most generic troubleshooting you can do is unplug your Lattice and plug it back in. Wait a minute or two and make sure that the top right of your screen eventually shows only a single icon: the wifi icon. If it shows any other icons, you probably aren't connected to the internet. Update your wifi on your Lattice by going to `Settings -> Wifi`.
-
-### Make sure your cloud service didn't go offline
-
-If your MQTT broker goes offline, it will probably sever connections with subscribed Lattices. You can repair a connection by simply unplugging your Lattice and plugging it in, assuming your Lattice is connected to the internet. You can also run `service mosquitto restart && service gpd restart` if you are SSHed in.
 
 ### Watch trace logs
 

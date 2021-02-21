@@ -7,12 +7,13 @@
     "build": "babel src -d dist",
     "lint": "eslint src",
     "start": "npx pm2 start dist/index.js --name lattice-connect --watch",
+    "start-docker": "node dist/index.js",
     "stop": "npx pm2 stop lattice-connect",
     "rm": "npx pm2 delete lattice-connect && pkill node",
     "logs": "npx pm2 logs lattice-connect",
     "test": "mocha --timeout 180000 test/integration.js",
     "docker-build": "docker build -t lattice-connect:1.0 .",
-    "docker-run": "docker run -d --name lattice-connect -p 80:80 -p 1883:1883 lattice-connect:1.0"
+    "docker-run": "docker run -d --name lattice-connect -p 3000:3000 -p 1883:1883 lattice-connect:1.0"
   },
   "repository": {
     "type": "git",

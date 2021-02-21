@@ -3,6 +3,6 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 RUN npm install
 COPY . .
-EXPOSE 80
+EXPOSE 3000
 EXPOSE 1883
-CMD ["npm", "start"]
+CMD ["npm", "run", "start-docker"]

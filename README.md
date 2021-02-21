@@ -55,6 +55,8 @@ tail -f <LOG_DEST>
 
 ### Running with Docker
 
+> **NOTE**: The Docker scripts are written using the default ports (specified in `config.js`: 1883 for MQTT, 3000 for http). If you want to change these ports, please also update the `Dockerfile` and the `start-docker` script in `package.json`.
+
 You can also build and run this module locally with Docker:
 
 ```
@@ -166,6 +168,25 @@ Assuming your process is running in the cloud (or wherever you deployed it), you
 ## 💻 Troubleshooting
 
 If you are not getting messages from your external requester to your Lattice, something in the communication pathway is probably broken. Please read the above documentation to make sure you have done everything you need to for your situation. If you are sure you set your pathway up properly, there are a few ways to debug and troubleshoot what's going on.
+
+### Make sure the connector process is running correctly
+
+You can ensure that your process is running with the following cURL command (using the default 3000 http port, as specified in `config.js`):
+
+```
+curl -X POST -H "Content-Type: application/json" -d '[1,2,3]' http://localhost:3000/fake_lattice_id
+```
+
+This request should hang, i.e. you should not immediately get a `Connection refused` error. If you do get that error, it means your process isn't running on the expected port.
+
+### Make sure your ports are correct
+
+The ports your connector will use are listed in `config.js`. Their defaults are:
+
+* MQTT: 1883
+* http: 3000
+
+You are welcome to change these, but be aware of the changes on the requester side. Also, if you are running Docker, you will need to update your `Dockerfile` and `start-docker` npm script (i.e. in `package.json`).
 
 ### Make sure your Lattice is connected to the internet
 

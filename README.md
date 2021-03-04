@@ -55,7 +55,7 @@ tail -f <LOG_DEST>
 
 ### Running with Docker
 
-> **NOTE**: The Docker scripts are written using the default ports (specified in `config.js`: 1883 for MQTT, 3000 for http). If you want to change these ports, please also update the `Dockerfile` and the `start-docker` script in `package.json`.
+> **NOTE**: The Docker scripts are written using the default ports (specified in `config.js`: 1883 for MQTT, 3000 for http). If you want to change these ports, please also update the `Dockerfile` and the `docker-run` script in `package.json`.
 
 You can also build and run this module locally with Docker:
 
@@ -186,7 +186,7 @@ The ports your connector will use are listed in `config.js`. Their defaults are:
 * MQTT: 1883
 * http: 3000
 
-You are welcome to change these, but be aware of the changes on the requester side. Also, if you are running Docker, you will need to update your `Dockerfile` and `start-docker` npm script (i.e. in `package.json`).
+You are welcome to change these, but be aware of the changes on the requester side. Also, if you are running Docker, you will need to update your `Dockerfile` and `docker-run` npm script (i.e. in `package.json`).
 
 ### Make sure your Lattice is connected to the internet
 

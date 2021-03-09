@@ -1,6 +1,8 @@
 # lattice-connect
 A small HTTP server + MQTT broker designed to communicate with [Lattice](https://gridplus.io/lattice) hardware wallets over the web.
 
+> NOTE: This repo is a bit of a work in progress. While it should work under the conditions specified below there may be edge cases. Please report any issues in this repo and we will take a look!
+
 ## 📖 Background
 
 The [Lattice](https://gridplus.io/lattice) is a next generation, always-online hardware wallet designed to sit behind a user's home WiFi network router. Since we cannot expect the average user to configure their home router, we expect default firewall settings that block incoming requests. For this reason, the Lattice is **not** designed to be contacted directly over HTTP. Instead, it uses a pub/sub model to subscribe to specific topics from an [MQTT](https://mqtt.org/) broker, which typically lives in the cloud. The Lattice connects to the MQTT broker and subscribes topics containing its own device ID. In order to reach Lattices, HTTP requests from third party applications must be transformed into MQTT messages and sent to the broker. The broker re-publishes the requests, which get picked up by the target Lattices (i.e. based on device ID) because those Lattices are subscribed to such messages from the broker.
@@ -113,15 +115,13 @@ service gpd start
 
 Where `host` is the location of your deployed instance of `lattice-connect` and `BROKER_PORT` refers to `MQTT.BROKER_PORT` in `config.js`, i.e. it is the *MQTT broker* port (1883 by default).
 
-### Using an insecure connection (i.e. no SSL)
-
-By default the Lattice is configured to make a secure mqtts (i.e. using SSL) connection to RabbitMQ. If you wish to use an insecure connection (i.e. use the default AWS instance host rather than your own domain), you will need to open mosquitto configuration (`/etc/mosquitto/mosquitto.conf`) and comment out the following line:
+Open up `/etc/mosquitto/mosquitto.conf` and make sure you see a line that starts with `address` and show your endpoint URL, e.g.:
 
 ```
-# bridge_capath /etc/ssl/certs/
+address myendpoint.gridplus.io:1883
 ```
 
-> NOTE: Most messages to the Lattice are encrypted, but we still recommend using an SSL connection
+If you do not see your endpoint listed, update the config file and run `service mosquitto restart && service gpd restart`.
 
 You will also need to update `/etc/init.d/mosquitto`. This file contains the init script for starting the mosquitto process. You need to add a block comment around the `echo` command, which writes a new `mosquitto.conf` file every time the service restarts. Since you just edited your mosquitto conf file above, you need to make sure those changes don't get overwritten. Add `Block_comment` to `/etc/init.d/mosquitto` like this:
 
@@ -165,6 +165,16 @@ service gpd restart
 
 Assuming your process is running in the cloud (or wherever you deployed it), your Lattice should establish a connection to the MQTT broker in a few seconds.
 
+### Using an insecure connection (i.e. no SSL)
+
+By default the Lattice is configured to make a secure mqtts (i.e. using SSL) connection to RabbitMQ. If you wish to use an insecure connection (i.e. use the default AWS instance host rather than your own domain), you will need to open mosquitto configuration (`/etc/mosquitto/mosquitto.conf`) and comment out the following line:
+
+```
+# bridge_capath /etc/ssl/certs/
+```
+
+> NOTE: Messages to the Lattice are end-to-end encrypted, but we still recommend using an SSL connection
+
 ## 💻 Troubleshooting
 
 If you are not getting messages from your external requester to your Lattice, something in the communication pathway is probably broken. Please read the above documentation to make sure you have done everything you need to for your situation. If you are sure you set your pathway up properly, there are a few ways to debug and troubleshoot what's going on.
@@ -178,6 +188,10 @@ curl -X POST -H "Content-Type: application/json" -d '[1,2,3]' http://localhost:3
 ```
 
 This request should hang, i.e. you should not immediately get a `Connection refused` error. If you do get that error, it means your process isn't running on the expected port.
+
+### Make sure your browser allows insecure connections (if applicable)
+
+If you are trying to set an endpoint without SSL (not recommended, but useful for testing) and you are getting failed requests, make sure the site originating the requests (e.g. the web wallet) allows insecure content. Check out [this article](https://experienceleague.adobe.com/docs/target/using/experiences/vec/troubleshoot-composer/mixed-content.html?lang=en#task_5448763B8DC941FD80F84041AEF0A14D) for more information.
 
 ### Make sure your ports are correct
 

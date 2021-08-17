@@ -62,6 +62,7 @@ tail -f <LOG_DEST>
 You can also build and run this module locally with Docker:
 
 ```
+npm i
 npm run docker-build
 npm run docker-run
 ```

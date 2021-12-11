@@ -15,7 +15,7 @@ import app from './app';
 import broker from './broker';
 import logger from './logger';
 
-const config = require('cconfig')();
+const config = require('../config.js');
 const packageJson = require('../package.json');
 
 logger.info(`${packageJson.name} version ${packageJson.version} starting`);

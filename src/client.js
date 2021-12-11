@@ -3,7 +3,7 @@
 import mqtt from 'mqtt';
 import logger from './logger';
 
-const config = require('cconfig')();
+const config = require('../config.js');
 
 const connectOptions = {
   clientId: config.MQTT_CLIENT_ID,

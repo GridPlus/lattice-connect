@@ -5,7 +5,7 @@ import client from './client';
 import logger from './logger';
 
 const cors = require('cors');
-const config = require('cconfig')();
+const config = require('../config.js');
 
 // Create an in-memory cache of responses. These will get cleared once processed.
 const responseCache = {};

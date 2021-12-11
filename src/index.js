@@ -39,11 +39,11 @@ process.on('unhandledRejection', (reason, promise) => {
 //----------------------------------
 function startBroker() {
   logger.info('Starting broker', broker)
-  broker.listen(config.MQTT.BROKER_PORT, () => {
-    logger.info('MQTT broker server started on port ', config.MQTT.BROKER_PORT);
+  broker.listen(config.MQTT_BROKER_PORT, () => {
+    logger.info('MQTT broker server started on port ', config.MQTT_BROKER_PORT);
   });
 }
-logger.info('broker?', broker);
+
 if (broker.closed === false) {
   broker.close(() => {
     logger.info('closed?');
@@ -54,10 +54,9 @@ if (broker.closed === false) {
   startBroker();
 }
 
-
 // 2. Create the REST server
 //----------------------------------
-logger.info('app', app)
+logger.info('app', app);
 app.listen(config.APP_PORT, config.APP_HOST, () => {
   logger.info(`signing-api-proxy started listening on ${config.APP_PORT}`);
 });

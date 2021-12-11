@@ -16,7 +16,7 @@ This module contains both HTTP server and MQTT broker, so it can be used as a si
 You can run this `node.js` module in a variety of ways. First, clone this repo and run 
 
 ```
-npm i && npm run build
+npm i
 ```
 
 You can now start the process with
@@ -53,6 +53,21 @@ To watch logs in real time, start your pm2 process and run
 
 ```
 tail -f <LOG_DEST>
+```
+
+### Configuration
+
+The config parmaeters set in `config.js` are referenced when starting the application. These come with defaults and
+also look at a local file `.config.json` (if it exists). This local `.config.json` is not tracked in git and it is
+where you can define params that are inspected in `config.js`.
+
+*Sample `.config.json`:*
+
+```
+{
+  "LOG_DEST": "./lattice.log",
+  "MQTT_PASSWORD": "superdupersecretpassword"
+}
 ```
 
 ### Running with Docker

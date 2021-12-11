@@ -2,24 +2,32 @@
 // connect to this broker.
 import logger from './logger';
 
-const aedes = require('aedes')();
+const aedes = require('aedes');
 const net = require('net');
 
-aedes.on('client', (_client) => {
-  logger.debug(`BROKER: New client (${_client.id}) attempting connection.`);
+const instance = aedes();
+let connCount = 0;
+
+instance.on('client', (_client) => {
+  logger.debug(`BROKER (conns=${connCount}): New client (${_client.id}) attempting connection.`);
 });
 
-aedes.on('clientReady', (_client) => {
-  logger.debug(`BROKER: Client (${_client.id}) connected.`);
+instance.on('clientReady', (_client) => {
+  connCount += 1;
+  logger.info(`BROKER (conns=${connCount}): Client (${_client.id}) connected.`);
 });
 
-aedes.on('subscribe', (_subscriptions, _client) => {
-  logger.debug(`BROKER: Client (${_client.id}) subscribed to topics: ${JSON.stringify(_subscriptions)}`);
+instance.on('clientError', (_client, error) => {
+  logger.error(`BROKER (conns=${connCount}): Error from client ${_client.id}: ${error.message}`);
 });
 
-aedes.on('publish', (_packet, _client) => {
-  logger.trace(`BROKER: Client (${_client}) published message: ${JSON.stringify(_packet)}`)
+instance.on('subscribe', (_subscriptions, _client) => {
+  logger.debug(`BROKER (conns=${connCount}): Client (${_client.id}) subscribed to topics: ${JSON.stringify(_subscriptions)}`);
 });
 
-const broker = net.createServer(aedes.handle);
+instance.on('publish', (_packet, _client) => {
+  logger.trace(`BROKER (conns=${connCount}): Client (${_client}) published message: ${JSON.stringify(_packet)}`);
+});
+
+const broker = net.createServer(instance.handle);
 export default broker;

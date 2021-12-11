@@ -1,12 +1,12 @@
 {
   "name": "lattice-connect",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "A small HTTP server + MQTT broker designed to bridge the web with Lattices in the field",
   "main": "dist/index.js",
   "scripts": {
     "build": "babel src -d dist",
     "lint": "eslint src",
-    "start": "npx pm2 start dist/index.js --name lattice-connect --watch",
+    "start": "npm run build && npx pm2 start dist/index.js --name lattice-connect --watch",
     "stop": "npx pm2 stop lattice-connect",
     "rm": "npx pm2 delete lattice-connect && pkill node",
     "logs": "npx pm2 logs lattice-connect",

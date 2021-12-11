@@ -8,25 +8,30 @@ const net = require('net');
 const instance = aedes();
 let connCount = 0;
 
-instance.on('client', (_client) => {
-  logger.debug(`BROKER (conns=${connCount}): New client (${_client.id}) attempting connection.`);
+instance.on('client', (client) => {
+  logger.debug(`BROKER (conns=${connCount}): New client (${client.id}) attempting connection.`);
 });
 
-instance.on('clientReady', (_client) => {
+instance.on('clientReady', (client) => {
   connCount += 1;
-  logger.info(`BROKER (conns=${connCount}): Client (${_client.id}) connected.`);
+  logger.info(`BROKER (conns=${connCount}): Client (${client.id}) connected.`);
 });
 
-instance.on('clientError', (_client, error) => {
-  logger.error(`BROKER (conns=${connCount}): Error from client ${_client.id}: ${error.message}`);
+instance.on('clientDisconnect', (client) => {
+  connCount -= 1;
+  logger.info(`BROKER (conns=${connCount}): Client (${client.id}) disconnected.`);
 });
 
-instance.on('subscribe', (_subscriptions, _client) => {
-  logger.debug(`BROKER (conns=${connCount}): Client (${_client.id}) subscribed to topics: ${JSON.stringify(_subscriptions)}`);
+instance.on('clientError', (client, error) => {
+  logger.error(`BROKER (conns=${connCount}): Error from client ${client.id}: ${error.message}`);
 });
 
-instance.on('publish', (_packet, _client) => {
-  logger.trace(`BROKER (conns=${connCount}): Client (${_client}) published message: ${JSON.stringify(_packet)}`);
+instance.on('subscribe', (_subscriptions, client) => {
+  logger.debug(`BROKER (conns=${connCount}): Client (${client.id}) subscribed to topics: ${JSON.stringify(_subscriptions)}`);
+});
+
+instance.on('publish', (_packet, client) => {
+  logger.trace(`BROKER (conns=${connCount}): Client (${client}) published message: ${JSON.stringify(_packet)}`);
 });
 
 const broker = net.createServer(instance.handle);

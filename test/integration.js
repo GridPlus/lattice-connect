@@ -8,12 +8,12 @@
 // uci set gridplus.remote_mqtt_address=<en0>:<MQTT.BROKER_PORT>
 // uci commit
 // service mosquitto start && service gpd start
-const config = require('cconfig')()
 const crypto = require('crypto')
 const expect = require('chai').expect
 const ps = require('child_process')
 const SDK = require('gridplus-sdk').Client;
 const question = require('readline-sync').question
+const config = require('../config.js');
 // Hardcoded key to use with the SDK so that we only have to pair with the Lattice once.
 const TEST_KEY = Buffer.from('93b9cacfa4e417bf8513ad8dbbb0bb35d48c4c154959663a9f25cf6508e85f90', 'hex');
 // Global service process

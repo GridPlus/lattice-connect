@@ -1,5 +1,5 @@
-const config = require('cconfig')();
 const pino = require('pino');
+const config = require('../config.js');
 
 const opts = {
   level: config.LOG_LEVEL || 'error',

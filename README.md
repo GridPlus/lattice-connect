@@ -59,7 +59,7 @@ tail -f <LOG_DEST>
 
 The config parmaeters set in `config.js` are referenced when starting the application. These come with defaults and
 also look at a local file `.config.json` (if it exists). This local `.config.json` is not tracked in git and it is
-where you can define params that are inspected in `config.js`.
+where you can define params that are inspected in `config.js`. Any param defined in both `config.js` and `.config.json` will be cast to the valuein `.config.json`.
 
 *Sample `.config.json`:*
 

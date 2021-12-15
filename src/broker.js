@@ -3,7 +3,10 @@
 import logger from './logger';
 
 const aedes = require('aedes');
+const fs = require('fs');
 const net = require('net');
+const tls = require('tls');
+const config = require('../config.js');
 
 const instance = aedes();
 let connCount = 0;
@@ -34,5 +37,15 @@ instance.on('publish', (_packet, client) => {
   logger.trace(`BROKER (conns=${connCount}): Client (${client}) published message: ${JSON.stringify(_packet)}`);
 });
 
-const broker = net.createServer(instance.handle);
+let tlsBroker;
+let netBroker;
+if (config.keyPath && config.certPath) {
+  const key = fs.readFileSync(config.keyPath);
+  const cert = fs.readFileSync(config.certPath);
+  tlsBroker = tls.createServer({ key, cert }, instance.handle);
+} else {
+  netBroker = net.createServer(instance.handle);
+}
+
+const broker = tlsBroker || netBroker;
 export default broker;

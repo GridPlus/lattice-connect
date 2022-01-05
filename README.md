@@ -285,7 +285,7 @@ To change this value, use:
 $ root@<SSH Host>: service gpd stop
 $ root@<SSH Host>: service mosquitto stop
 
-# Point to MQTT to relevant address ('1883' for non-SSL; see next section)
+# Point the MQTT connection to the relevant address ('1883' for non-SSL; see next section)
 $ root@<SSH Host>: uci set gridplus.remote_mqtt_address=10.0.0.1:1883
 
 # Apply the change
@@ -430,7 +430,7 @@ From an Internet browser, navigate to the _Lattice Manager_:
 http://10.0.0.1:3000
 ```
 
-You are not ready to log in:
+You are now ready to log in:
 
  1. enter your `deviceID`; and,
  2. enter your `password`.

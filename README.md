@@ -303,7 +303,7 @@ See the `man` page for `mosquitto` to review [the full list of configuration opt
 
 <hr />
 
-⚠️ _**WARNING**: It's important to consider the risks that disabling SSL has, in that messages you send across the connection will no longer be encrypted. **Proceed cautiously**_⚠️
+⚠️ **WARNING**: It's important to consider the risks that disabling SSL has, in that messages you send across the connection will no longer be encrypted. **Proceed cautiously**⚠️
 
 <hr />
 
@@ -371,6 +371,7 @@ It's possible to test the connection in multiple ways:
  3. connect (or re-connect) your Lattice<sup>1</sup> to MetaMask.
 
 <hr />
+
 #### 💻 Using `wget` from the Lattice<sup>1</sup> (and SSH)
 
 While connected to a remote SSH terminal session:
@@ -407,9 +408,11 @@ You can replace a known `deviceID` with a fake one and it will still work for te
 #### 🌐 Log into the _Lattice Manager_
 
 <hr />
-⚠️ _**WARNING**: If you're using an insecure connection (see [this earlier section](#2%EF%B8%8F⃣🅱%EF%B8%8F-optional-disable-ssl-checks-in-mosquitto)) you'll need to configure your browser to allow loading insecure content._
 
-_[This article](https://experienceleague.adobe.com/docs/target/using/experiences/vec/troubleshoot-composer/mixed-content.html?lang=en#task_5448763B8DC941FD80F84041AEF0A14D) can guide you through disabling insecure content checks on most browsers. **Proceed cautiously**_⚠️
+⚠️ **WARNING**: If you're using an insecure connection (see [this earlier section](#2%EF%B8%8F⃣🅱%EF%B8%8F-optional-disable-ssl-checks-in-mosquitto)) you'll need to configure your browser to allow loading insecure content.
+
+[This article](https://experienceleague.adobe.com/docs/target/using/experiences/vec/troubleshoot-composer/mixed-content.html?lang=en#task_5448763B8DC941FD80F84041AEF0A14D) can guide you through disabling insecure content checks on most browsers. **Proceed cautiously**⚠️
+
 <hr />
 
 From an Internet browser, navigate to the _Lattice Manager_:

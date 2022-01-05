@@ -172,13 +172,13 @@ This section describes how to modify settings on your Lattice<sup>1</sup> so it'
 
 ##### Overview of steps are:
 
-1. SSH into your Lattice<sup>1</sup>; and,
-   a. stop `gpd` & `mosquitto` via `service <SERVICE> stop`; and,
-   b. review `gpd` settings via `uci show gridplus`; and,
-2. modify settings for the `gpd` & `mosquitto` services:
-   a. change the MQTT endpoint used in `gpd`; and,
-   b. _(OPTIONAL)_ disable SSL checks in `mosquitto` (MQTT); and
-3. restart `gpd` and `mosquitto` services to apply changes.
+1. SSH into your Lattice<sup>1</sup>; and,  
+  a. stop `gpd` & `mosquitto` via `service <SERVICE> stop`; and,  
+  b. review `gpd` settings via `uci show gridplus`; and,  
+2. modify settings for the `gpd` & `mosquitto` services:  
+  a. change the MQTT endpoint used in `gpd`; and,  
+  b. _(OPTIONAL)_ disable SSL checks in `mosquitto` (MQTT); and. 
+3. restart `gpd` and `mosquitto` services to apply changes.  
 
 #### 1️⃣  SSH into your device
 

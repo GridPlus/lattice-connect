@@ -31,7 +31,7 @@ This section describes installing the `lattice-connector`, which is a small HTTP
 
 It's possible to run the server:
   
- - as **a process directly** on a host systemt (using `node v12`); or,
+ - as **a process directly** on a host system (using `node v12`); or,
  - through a **Docker** container.
 
 <hr />

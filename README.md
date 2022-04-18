@@ -224,7 +224,7 @@ Stop these two services in preparation to make your changes:
 $ root@<SSH Host>: service gpd stop
 
 # Stop `mosquitto`
-$ root@<SSH Host>: service mostquitto stop
+$ root@<SSH Host>: service mosquitto stop
 ```
 
 

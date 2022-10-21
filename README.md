@@ -1,5 +1,7 @@
 <img src="banner.png" />
 
+# ⚠️ This has been deprecated. Please use: [lattice-connect-v2](https://github.com/GridPlus/lattice-connect-v2). ⚠️
+
 # 👋 Introduction
 By default, communication with a [Lattice<sup>1</sup>](https://gridplus.io/lattice) is routed through GridPlus' centralized cloud infrastructure. Although there is great care that goes into encrypting and securing these communication channels, we at [GridPlus](https://gridplus.io) want your Lattice<sup>1</sup> to be 100% yours, so we want to offer `lattice-connect` as an alternative to centralized message routing. 
 
